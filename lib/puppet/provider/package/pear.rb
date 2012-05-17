@@ -22,7 +22,7 @@ Puppet::Type.type(:package).provide :pear, :parent => Puppet::Provider::Package 
     begin
       list = execute(command).collect do |set|
         if hash[:justme]
-          if  set =~ /^hash[:justme]/
+		 if  set[0,hash[:justme].bytesize].downcase == hash[:justme].downcase 
             if pearhash = pearsplit(set)
               pearhash[:provider] = :pear
               pearhash
@@ -68,7 +68,7 @@ Puppet::Type.type(:package).provide :pear, :parent => Puppet::Provider::Package 
     when /^PACKAGE/: return nil
     when /^$/: return nil
     when /^\(no packages installed\)$/: return nil
-    when /^(\S+)\s+([.\da-z]+)\s+\S+\n/
+    when /^(\S+)\s+([.\S\d]+)\s+\S+\n/
       name = $1
       version = $2
       return {
